@@ -1,6 +1,8 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
+#include "matematicas/Matematicas.h"
+
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(800, 600), "Mi primer video juego");
@@ -13,14 +15,16 @@ int main()
 	jugador.setOrigin(jugador.getSize().x / 2.f, jugador.getSize().y / 2.f);
 
 	jugador.setPosition(800.f / 2.f, 600.f / 2.f);
+	jugador.setRotation(58.f);
 
 	sf::Clock reloj;
-
 	float DeltaTime = 0.f;
 
 	sf::Vector2f direccion;
+	float velocidad = 90.f;
 
-	float velocidad = 70.f;
+	sf::Mouse mouse;
+	sf::Vector2f mousePosicion = sf::Vector2f(mouse.getPosition(window));
 
 	while (window.isOpen())
 	{
@@ -36,11 +40,15 @@ int main()
 				window.close();
 		}
 		
-		std::cout << DeltaTime << std::endl;
+		mousePosicion = sf::Vector2f(mouse.getPosition(window));
+
+		//std::cout << DeltaTime << std::endl;
 
 		direccion = sf::Vector2f(sf::Keyboard::isKeyPressed(sf::Keyboard::D) - sf::Keyboard::isKeyPressed(sf::Keyboard::A), 
 					sf::Keyboard::isKeyPressed(sf::Keyboard::S) - sf::Keyboard::isKeyPressed(sf::Keyboard::W));
+		direccion = normalizar(direccion);
 
+		jugador.setRotation(miraA(jugador.getPosition(), mousePosicion));
 		jugador.move(direccion * velocidad * DeltaTime);
 
 		window.clear(sf::Color(35, 35, 35, 255));
